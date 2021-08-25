@@ -1,5 +1,5 @@
 ---
-date updated: '2021-08-24T06:44:50-07:00'
+date updated: '2021-08-25T06:02:04-07:00'
 
 ---
 
@@ -192,11 +192,86 @@ Why not CACHE MEMORY? OS does not DIRECTLY manage the cache, it is usually the a
 ![monolithic_os_img](./img/Pasted%20image%2020210824064439.png)
 
 - Pros
-	- Everything included
-	- Inlining and compile-time optimizations
+  - Everything included
+  - Inlining and compile-time optimizations
 - Cons
-	- No customizations
-	- Not portable/manageable
-	- Too much code
-	- Large footprint that impacts performance
-- 
+  - No customizations
+  - Not portable/manageable
+  - Too much code
+  - Large footprint that impacts performance
+
+## Modular OS
+
+- Aka linux operating system
+- Basic services included
+- Everything can be added(as a module)
+  - File System changes
+- OS specifies an interface that a module should implement, this reduces complexity for the OS. It shifts the complexity and implementation of the interface spec to the developer of the module instead.
+- Pros
+  - Easier to maintain
+  - Smaller footprint
+  - Less resource intensive
+- Cons
+  - Indirection can impact performance
+    - Module interface can impact performance
+  - Maintenance can still be an issue
+    - Poor codebases behind modules can cause alot of bugs in the long run.
+
+
+## Microkernel OS
+
+![](.img/Pasted%20image%2020210825060604.png)
+
+- ONLY require the most BASIC primitives
+	- At most memory and threads are supported
+	- Everything else **runs on user level**
+		- File system
+		- Device driver
+		- disk driver
+- Uses alot of IPC
+- Pros
+	- Small codebase size
+	- Verifiability, easy to verify due to smaller codebase
+- Cons
+	- Not portability
+	- Usually customized for specific platforms
+	- Complexity of software development
+	- Cost of user/kernel crossing
+
+
+## Linux and Mac OS Architecture
+
+### Linux
+
+![](.img/Pasted%20image%2020210825060755.png)
+![](./img/Pasted%20image%2020210825060820.png)
+
+- Abstracts hardware by supporting abstractions at OS level via mechanisms
+- Standard library that uses system call
+- Kernel consists of
+	- Virtual File System
+	- Memory Management
+	- Process Management
+
+### Mac OS
+![](./img/Pasted%20image%2020210825061145.png)
+
+- Core is a mach microkernel
+	- Memory management
+	- Scheduling
+	- IPC communication
+- BSD component
+	- Provides Unix interop 
+	- POSIX api support
+	- Network IO
+- All applications sit above BSD Component layer
+
+## Summary
+
+- OS Elements
+	- Abstractions have mechanisms
+	- Mechanisms enforce policies
+	- Policies are ways to choose what to do(eg. LRU)
+- OS support communications between applications via a system call interface
+- OS organization alternatives
+	- Linux vs Mac OS
