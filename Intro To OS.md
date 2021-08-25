@@ -5,7 +5,7 @@ date updated: '2021-08-24T06:44:50-07:00'
 
 # OS
 
-![simple_os_def](Pasted%20image%2020210823071224.png)
+![simple_os_def](../mg/Pasted%20image%2020210823071224.png)
 
 **Abstract** - simply what hardware looks
 
@@ -14,18 +14,18 @@ date updated: '2021-08-24T06:44:50-07:00'
 ## Visual Metaphor
 
 A visual metaphor to help illustrate an OS:
-![visual_metaphor](Pasted%20image%2020210823071458.png)
+![visual_metaphor](../mg/Pasted%20image%2020210823071458.png)
 
-![os_fitting_vs](Pasted%20image%2020210823071644.png)
+![os_fitting_vs](../mg/Pasted%20image%2020210823071644.png)
 
 ## What is an OS?
 
 - Computing system consist of CPU, Memory, Network Connections, GPU(optional), Storage, USB devices
 - Layer that sits between complex hardware and other applications(eg. Skype, MS Excel, etc)
 
-![layer_os](Pasted%20image%2020210823071927.png)
+![layer_os](../mg/Pasted%20image%2020210823071927.png)
 
-![features_of_os](Pasted%20image%2020210823072134.png)
+![features_of_os](../mg/Pasted%20image%2020210823072134.png)
 
 - Job
   - hiding hardware complexity
@@ -41,7 +41,7 @@ Layer of systems software that:
 - manages hardware on behalf of one or more applications, according to **pre-defined policies**
 - Ensures isolation and protection for apps.
 
-![official_os_def](Pasted%20image%2020210823072621.png)
+![official_os_def](../mg/Pasted%20image%2020210823072621.png)
 
 - Parts of OS
   - File system
@@ -94,7 +94,7 @@ Why not CACHE MEMORY? OS does not DIRECTLY manage the cache, it is usually the a
 - Mechanism - allocate, map to a process
 - Policies - LRU used to move the DRAM to disk
 
-![os_elements_mem_mng_example](Pasted%20image%2020210824053853.png)
+![os_elements_mem_mng_example](../mg/Pasted%20image%2020210824053853.png)
 
 ## Design Principles
 
@@ -130,7 +130,7 @@ Why not CACHE MEMORY? OS does not DIRECTLY manage the cache, it is usually the a
 
 ### System Calls
 
-![sys_call_flow_chart](Pasted%20image%2020210824060855.png)
+![sys_call_flow_chart](../mg/Pasted%20image%2020210824060855.png)
 
 - Not a cheap operation
   - Changing contexts
@@ -146,7 +146,7 @@ Why not CACHE MEMORY? OS does not DIRECTLY manage the cache, it is usually the a
   - Asynchronous
     - Picks up when the sys call returns (eg the select system call)
 
-![sys_call_arg_passing](Pasted%20image%2020210824060935.png)
+![sys_call_arg_passing](../mg/Pasted%20image%2020210824060935.png)
 
 ### Crossing the OS Boundary
 
@@ -183,13 +183,13 @@ Why not CACHE MEMORY? OS does not DIRECTLY manage the cache, it is usually the a
     - Storage Management
     - Security
 
-![system_calls_windows_vs_linux](Pasted%20image%2020210824063554.png)
+![system_calls_windows_vs_linux](../mg/Pasted%20image%2020210824063554.png)
 
-![sys_calls_quiz](Pasted%20image%2020210824064147.png)
+![sys_calls_quiz](../mg/Pasted%20image%2020210824064147.png)
 
 ## Monolithic OS
 
-![monolithic_os_img](Pasted%20image%2020210824064439.png)
+![monolithic_os_img](../mg/Pasted%20image%2020210824064439.png)
 
 - Pros
 	- Everything included
