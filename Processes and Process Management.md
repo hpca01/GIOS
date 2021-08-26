@@ -65,9 +65,12 @@ date updated: '2021-08-25T07:04:37-07:00'
 #### Quiz
 ![](./img/Pasted%20image%2020210825070809.png)
 
+It is important to note the difference between segmentation based memory management and paging based memory management.
+
 - Why?
 	- OS is free to figure out how to **ALIGN** blocks(aka pages) of memory among the address space as it sees fit
 	- If both processes take up a range of 0-64k address space, the OS is free to decide how it wants to align blocks(aka pages) of each process's address space.
 
 
 ## How are multiple concurrent processes managed by OS?
+
