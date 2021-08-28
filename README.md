@@ -1,4 +1,4 @@
-﻿# GIOS
+# GIOS
 
 These are my lecture notes for GIOS for Fall 2021 semester.
 
