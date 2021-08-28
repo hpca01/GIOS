@@ -1,5 +1,5 @@
 ---
-date updated: '2021-08-27T06:33:52-07:00'
+date updated: '2021-08-28T07:11:47-07:00'
 
 ---
 
@@ -192,3 +192,79 @@ The CPU is able to execute a process when the process in which state?
   - What metrics to use for choosing the next process to run?
 
 ![](./img/Pasted%20image%2020210827063349.png)
+
+### What about I/O
+
+![](./img/Pasted%20image%2020210827065903.png)
+
+- How does I/O affect scheduling
+  - Process makes I/O request via CPU, OS via CPU delivers that request to the device and moves the process to waiting queue until the device comes back with the I/O request completed and/or a response.
+  - Process goes back into the ready queue
+
+How a process makes its way to ready queue _after_ its been through the CPU
+![](./img/Pasted%20image%2020210827070245.png)
+
+### Quiz - Scheduler Responsibility
+
+![](./img/Pasted%20image%2020210828064000.png)
+
+- It does **not** maintain the I/O queue
+- It does **not** control when external events are generated.
+  - Other than the programmable interval timer(hardware based timer), which the OS sets up
+  - Perhaps the most important interrupt for operating system design is the "timer interrupt", which is emitted at regular intervals by a timer chip.[source](https://en.wikibooks.org/wiki/Operating_System_Design/Processes/Interrupt)
+
+### Inter process communication
+
+![](./img/Pasted%20image%2020210828065220.png)
+
+- Can processes interact?
+  - Yes
+- IPC is a set of mechanisms that allow processes to interact.
+  - Transfer data/info between address spaces
+  - Maintain protection and isolation
+  - Provide flexibility and performance
+
+#### Types
+
+![](./img/Pasted%20image%2020210828070043.png)
+
+- Message Passing
+  - Communication channel, essentially a shared buffer
+    - Processes puts info in a message and sends it to the channel `send()`
+    - Another process asks to read the message from the channel `recv()`
+  - Pros
+    - OS manages it and provides the same API to both processes.
+  - Cons
+    - Overhead, it costs time to copy the info from the sending process to the channel. Then copy that info from the channel to the address space of the receiving process.
+
+![](./img/Pasted%20image%2020210828070310.png)
+
+- Shared Memory
+  - OS makes the shared memory channel, and maps it into the address space of **both** processes.
+  - Processes can read and write to the shared memory as if they were reading and writing to any part of their owned address space
+  - Pros
+    - **NO** overhead!
+      - OS _does not_ handle anything other than shared memory creation, destruction, and mapping.
+  - Cons
+    - This means the complexity of managing data is completely up to the processes
+      - Eg. Assume process1 is producer and process2 is consumer
+        - If process1 is writing to the shared memory space how does process2 know it is **okay** to read?
+        - If process2 is reading from the shared memory space, how does process1 know it is **okay** to write to it?
+
+#### Quiz
+
+Shared memory based communication performs better than message passing communication. == It depends
+
+- Data exchange is cheap, mapping memory setup costs between 2 processes is sufficiently large.
+  - Need to weigh the pros and cons, if you are sending a 100 messages and the cost of those outweighs the cost of mapping memory between 2 processes then it makes sense. Else if you are only sending 5 messages, then it does not make sense to incur the overhead of mapping an address space between 2 processes.
+
+## Summary
+
+- Process and process related abstractions
+  - How an address space behaves in memory in relation to a process
+  - How a PCB is a representation of state of a process and utilized by OS to schedule it with the CPU
+- Mechanisms for process management
+  - Process Creation
+  - Process Scheduling
+  - Context switching
+  - Interprocess communication
