@@ -1,5 +1,5 @@
 ---
-date updated: '2021-08-29T13:13:11-07:00'
+date updated: '2021-08-29T13:24:38-07:00'
 
 ---
 
@@ -53,9 +53,19 @@ Refer to [intro to programming with threads paper](https://s3.amazonaws.com/cont
 - Also known as mutual exclusion principle
 - Threads **without** a critical section can execute whatever they want to.
 - Critical section is usually set up in place to prevent any undefined behavior from occurring, eg data races
+- It is important to note that the lock does not guarantee a deterministic behavior to picking which of the waiting threads gets to lock next.
 
 #### Conditional Variables
 
+- Should be used in conjunction with mutex
+- Flow
+  - Section of code acquires lock, and then initiates a wait on a conditional variable, going to sleep
+    - When waiting, it releases the lock
+  - A different thread with a different section of code acquires lock and then **signals** the condition variable.
+    - Upon signaling, the thread is awake again and tries to reacquire the lock
+    - Once lock is obtained it continues its execution path.
+- It is important to note that the condition variable does not guarantee which of the woken up threads will get to lock first.
+- It is also possible to use **broadcast** vs **signal**, but it might not always be useful as after waking up all threads, only 1 of them can actually get a lock.
 
 #### How to support threads?
 
@@ -140,3 +150,21 @@ Do the following statements apply to processes, threads or both?
   - multiple threads can usually result in hotter caches
 - Make use of some communication mechanisms
   - both have their own, processes have ipc, and threads have sync primitives
+
+## Readers/Writer Problem
+Let's look at a scenario where there is some subset of threads that want to read from shared state, and one thread that wants to write to shared state. This is commonly known as the **readers/writer** problem.
+
+At any given point in time, 0 or more readers can access the shared state at a given time, and 0 or 1 writers can access the shared state at a given time. The readers and writer cannot access the shared state at the same time.
+
+One naive approach would be to wrap access to the shared state itself in the mutex. However, this approach is too restrictive. Since mutexes only allow access to shared state one thread at time, we would not be able to let multiple readers access state concurrently.
+
+Let's enumerate the conditions in which reading is allowed, writing is allowed, and neither is allowed. We will use a `read_counter` and a `write_counter` to express the number of readers/writers at a given time.
+
+If `read_counter == 0` and `write_counter == 0`, then both writing and reading is allowed. If `read_counter > 0`, then only reading is allowed. If `write_counter == 1`, neither reading nor writing is allowed.
+
+We can condense our two counters into one variable, `resource_counter`. If the `resource_counter` is zero, we will say that resource is free; that is, available for reads and writes. If the resource is being accessed for reading, the `resource_counter` will be greater than zero. We can encode the case where the resource is being accessed for writing by encoding `resource_counter` as a negative number.
+
+Our `resource_counter` is a **proxy variable** that reflects the state that the current resource is in. Instead of controlling updates to the shared state, we can instead control access to this proxy variable. As long as any update to the shared state is first reflected in an update to the proxy variable, we can ensure that our state is accessed via the policies we wish to enforce.
+
+![](Pasted%20image%2020210829133519.png)
+
