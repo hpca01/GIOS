@@ -116,10 +116,15 @@ To correct the problem, we must first initialize an array `tNum` that contains a
 
 ![](https://assets.omscs.io/notes/B5DB4FD0-C1D8-4180-A2A9-D4E8BFB93F7E.png)
 
+### Quiz
+Using aforementioned logic, we fixed the issue with the repeating numbers. However the printout will still be in random sequence as scheduling a thread is not a deterministic.
+
 ## PThread Mutexes
 To deal with the mutual exclusion problem, pthreads supports mutexes. Mutual exclusion ensures that threads access shared state in a controlled manner, such that only thread at a time can apply modifications or otherwise access that shared variable.
 
 In pthreads, the mutex data structure is represented via a `pthread_mutex_t` type.
+
+![pthread_mutexes_in_c](./img/Pasted%20image%2020210907182756.png)
 
 In pthreads, there is no implicit unlock: both lock and unlock must be explicitly called.
 
@@ -129,7 +134,7 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex);
 ```
 
 Whatever code appears between these two statements will correspond to the *critical section*.
-
+![pthread_mutexes_func_sig](./img/Pasted%20image%2020210907183007.png)
 Mutexes must be explicitly initialized, as with the following function
 
 ```c

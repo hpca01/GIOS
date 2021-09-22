@@ -3,11 +3,14 @@ id: operating-systems-thread-performance-considerations
 title: Thread Performance Considerations
 course: operating-systems
 lecture: thread-performance-considerations
+date updated: '2021-09-17T07:11:05-07:00'
+
 ---
 
 # Thread Performance Considerations
 
 ## Which Threading Model Is Better?
+
 Let's compare the following two models to see which one is better
 
 ![](https://assets.omscs.io/notes/6599CE4C-F1E1-4AA1-A546-F2667436BE59.png)
@@ -38,23 +41,33 @@ average_time_per_order =  total_time / total_orders
 # average_time_per_order == 220ms
 ```
 
-If execution time is important, pick the pipeline model. Rather, if we care about the average time to complete the order, the boss/workers model is better.  
+If execution time is important, pick the pipeline model. Rather, if we care about the average time to complete the order, the boss/workers model is better.
 
 It's usually not possible to decree that one model is better than the other. Performance of a model is relative to the metric being measured, and different metrics may be important in different contexts.
 
 ## Are Threads Useful?
+
 Threads are useful for a few reasons. They allow us to have speed up because we can parallelize problems. We get to benefit from a hot cache because we can specialize what a particular thread is doing. Using threads leads to implementations that have lower memory requirements and are cheaper to synchronize than implementations that are multiprocess. Threads are useful even on a single CPU because they allow us to hide latency of I/O operations.
 
-What *is* useful?
+What _is_ useful?
 
-For a matrix multiply application, we may care about the raw *execution time* of the application. For a web server application, we might care about the *throughput* of the application (number of requests/time) or we might care about the *response time*. For a hardware chip, we might care about the overall *utilization* increase of the hardware.
+For a matrix multiply application, we may care about the raw _execution time_ of the application. For a web server application, we might care about the _throughput_ of the application (number of requests/time) or we might care about the _response time_. For a hardware chip, we might care about the overall _utilization_ increase of the hardware.
 
 For any of these metrics, we might care about the average value, or the max/min value, or maybe even the value at a certain percentage. For example, we may consider that an application that completes a task in 3ms 95% of the time to be sufficient.
 
 To evaluate some solution, and determine whether it is useful or not, it is important to determine the properties that we really care about. We call such properties **metrics**.
 
+![](./img/Pasted%20image%2020210916201019.png)
+
+**TLDR** Performance is relative to a metric. You can't say 1 is better than the other without specifying in _what_ way.
+
+![](./img/Pasted%20image%2020210916201224.png)
+
 ## Performance Metrics
+
 A metric is a measurable or quantifiable property of a system that we are interested in that can be used to evaluate the system's behavior. For example, a metric can be the execution time (measurable property) of a software implementation to a problem (component of system we are interested in) which can be used to see if the implementation being analyzed is more performant than other implementations (system behavior evaluation).
+
+![](./img/Pasted%20image%2020210916201808.png)
 
 So far, we have discussed many useful metrics, such as:
 
@@ -83,11 +96,12 @@ You may be interested in just one metric before making decisions, or you may nee
 
 In summary, a metric is some measurable quantity we can use to reason about the behavior of a system.
 
-Ideally, we will obtain these measurements running real software on real machines with real workloads. Often, this is not feasible for many different reasons. In these cases, we may have to settle on "toy" experiments that are *representative* of realistic situations that we may encounter.
+Ideally, we will obtain these measurements running real software on real machines with real workloads. Often, this is not feasible for many different reasons. In these cases, we may have to settle on "toy" experiments that are _representative_ of realistic situations that we may encounter.
 
 We refer to these experimental settings as a **testbed**. The testbed tells us where/how the experiments were carried out and what were the relevant metrics being gathered.
 
 ## Really … Are Threads Useful?
+
 There isn't really a straightforward answer to this question or the more general question of "Is X Useful?". The answer depends on which metrics we have gathered, as well as the workload on the system. For different combinations of these two variables, we may arrive at very different conclusions.
 
 For example, some graph traversal algorithms work best on sparse graphs, while others work best on dense graphs. Some filesystems are optimized for read access, while others might be optimized for a write-heavy system.
@@ -95,6 +109,7 @@ For example, some graph traversal algorithms work best on sparse graphs, while o
 The answer is: It depends! While, this answer is almost always correct, it is rarely accepted. What is more important perhaps, is to modify the question, extending it to include the context you wish to examine and the metrics you wish to obtain.
 
 ## Multi Process Vs. Multi Threaded
+
 An application can be implemented in a multithreaded way, which we have talked about at length. An application can also be implemented in a multiprocess way. Both strategies can be used to provide concurrency.
 
 We will compare the multithreaded approach and the multiprocess approach in the context of a web server, which may like to utilize concurrency in order to more efficiently process client requests.
@@ -110,6 +125,9 @@ Other steps require interaction with the network, like accepting a connection an
 Still other steps require interaction with disk, such as finding and reading the file.
 
 ## Multi Process Web Server
+
+![](./img/Pasted%20image%2020210917051948.png)
+
 One easy way to achieve concurrency is to have multiple instances of the same process.
 
 ![](https://assets.omscs.io/notes/C5DA1B45-4114-437C-A96F-94AB7645F449.png)
@@ -119,6 +137,9 @@ The benefits of this approach is that it is simple. Once we have correctly devel
 The downside of running multiple processes in a platform is that there is a higher memory footprint, which can hurt performance. In addition, we have to pay the high cost of a context switch whenever we want to run a different process. As well as, it can be hard/costly to maintain shared state across processes due to IPC constraints. Finally, it may be difficult to have multiple processes listening on a specific port.
 
 ## Multi Threaded Web Server
+
+![](./img/Pasted%20image%2020210917052310.png)
+
 Instead of taking a multiprocess approach, we can opt for a multithreaded approach, achieving concurrency within a single address space.
 
 ![](https://assets.omscs.io/notes/E9D12EF3-81CA-44E9-A248-4852A709C45D.png)
@@ -130,6 +151,7 @@ The benefits of this approach are that we have a shared address space, shared st
 The downside of this approach is that it is not a simple implementation. Multithreaded programs require explicit application level synchronization code, which can add to the overall complexity of the application. In addition, a multithreaded approach depends on underlying operating system level support for threads, although this is less of an issue now than it was in the past.
 
 ## Event-Driven Model
+
 An event driven application is implemented in a single address space, with a single thread of control. The main part of the process is an **event dispatcher** which in a loop looks for incoming events and then based on those events invokes one or more of the registered handlers.
 
 ![](https://assets.omscs.io/notes/8070F398-66E2-46AB-9C66-DF1727B257C1.png)
@@ -145,6 +167,7 @@ The event dispatcher has the ability to accept any of these types of notificatio
 The handlers run to completion. If the handler needs to block (by making an I/O request for instance), the handler will initiate the blocking operation and immediately pass control back to the dispatch loop.
 
 ## Concurrency In The Event-Driven Model
+
 In the multiprocess and multithreaded implementation, one request is handled at a time per execution context. Since we have multiple execution contexts, we can achieve concurrency.
 
 In the event driven model, the processing of multiple requests are interleaved within a single execution context.
@@ -154,6 +177,7 @@ Let's say we have one client that makes a request to our server. The client conn
 Even though we are within one thread of execution, we are still able to simultaneously parse multiple requests.
 
 ## Event-Driven Model: Why?
+
 What is the benefit of having a execution context processing multiple requests?
 
 On a single CPU, threads can be useful because they hide latency. If the amount of time a thread will spend idle is greater than the time it takes to context switch twice, it makes sense to context switch and let some other thread do some work.
@@ -167,11 +191,14 @@ If we have multiple CPUs, the event driven model still makes sense, especially w
 Gotcha: It is important to have mechanisms that will steer the right set of events to the right CPU.
 
 ## Event-Driven Model: How?
+
+![](./img/Pasted%20image%2020210917055357.png)
+
 At the lowest level, we need to be receiving some events from the hardware, be it the network or the disk or some other hardware component. The operating system uses sockets as an abstraction over the network, and files as an abstraction over the disk.
 
 Both sockets and files are represented by **file descriptors**. An event in the context of the web server is an input on any of the file descriptors associated with it.
 
-To determine which file descriptor has input, we can use the `select` system call. This call takes a range of file descriptors and returns the first descriptor that has some input on it. Another alternative is the `poll` system call.  
+To determine which file descriptor has input, we can use the `select` system call. This call takes a range of file descriptors and returns the first descriptor that has some input on it. Another alternative is the `poll` system call.
 
 Both of these system calls have to scan through a potentially large list of file descriptors, and it is likely that there are only few within that list, which are allocated to our web server.
 
@@ -180,9 +207,12 @@ A more recent system call is `epoll`. This eliminates some of the problems that 
 The benefits of the event driven model mainly come from the design as a single address space with a single flow of control. As a result, the overheads are lower. There is a smaller memory footprint, and no need for context switching or synchronization.
 
 ## Helper Threads And Processes
-When we talked about the many-to-one user level thread to kernel level thread model, we saw that a user level thread that blocks will block the entire process.  
+
+When we talked about the many-to-one user level thread to kernel level thread model, we saw that a user level thread that blocks will block the entire process.
 
 A similar problem can occur in the event driven model. If one of the handlers initiates a blocking call, the entire process can be blocked.
+
+![](./img/Pasted%20image%2020210917060123.png)
 
 One way to circumvent this issue is to use **asynchronous I/O operations**. In asynchronous system calls the operating system obtains all of the relevant information from the stack, and either learns where to return results, or tells the caller where to get results later. Asynchronous calls let the process or thread continue execution now and check their results later.
 
@@ -204,13 +234,24 @@ In doing this, the synchronous I/O call is handled by the helper. The helper wil
 
 If the kernel is not multithreaded - it wasn't back in the day - the helpers need to be processes. The model was called the **Asymmetric Multi-Process Event-Driven Model** or AMPED. The multithreaded equivalent acronym is AMTED.
 
+![](./img/Pasted%20image%2020210917060540.png)
+
 The key benefits of this model are that  it resolves some of the portability issues of the basic event-driven model. That is, it fakes asynchronous I/O operations instead of relying on native support for them.
 
 In addition, this model allows us to have a smaller footprint than a pure multiprocess or multithreaded model. Since a thread or a process in the pure multiprocess/threaded model needs to perform all of the steps for processing the request, the memory footprint will be higher than that of a helper that just needs to do a very isolated task.
 
 One downside is that this model is only applicable to certain classes of applications. Another downside is that there are some complexities surrounding event routing on multi CPU systems.
 
+### Quiz
+
+![](./img/Pasted%20image%2020210917060641.png)
+
+I would say ~~either pipeline or~~ event-driven model requires the least amount of memory, the threads being spooled up have very specific purposes and used in parts to process requests. The threads are only used for the blocking requests, otherwise the whole request can be processed without them. Compared to the pipeline model, it is more efficient to do this. Pipeline model spins up a thread **and** uses it regardless. Event-driven process _might_ use a thread, only if it blocks so more than likely it will not need to waste extra memory as opposed to pipeline.
+
+![](./img/Pasted%20image%2020210917060903.png)
+
 ## Flash Web Server
+
 Flash is an event-driven web server that follows the AMPED model, which means it has asymmetric helper processes to help with blocking I/O operations.
 
 The blocking I/O operations that are happening in this scenario are basically just disk reads.
@@ -227,7 +268,14 @@ Similarly, the fields in the HTTP header are often file dependent. So long as th
 
 Flash also makes some optimizations that take advantage of the available network hardware.
 
+![](./img/Pasted%20image%2020210917061737.png)
+
+What is DMA? Direct memory access. When memory is "aligned" it is easier for the CPU to be able to read it faster. Think of it as blocks, if you read in blocks of 4 vs blocks of 1, and you need to read 12 things. You will finish in 3 operations vs 12 operations.
+
+What is scatter-gather vector i/o? Vectored I/O, also known as scatter/gather I/O, is a method of input and output by which a single procedure call sequentially reads data from multiple buffers and writes it to a single data stream, or reads data from a data stream and writes it to multiple buffers, as defined in a vector of buffers.
+
 ## Apache Web Server
+
 The core component of the apache web server provides the core server functionality. This includes accepting requests, issuing responses, and managing concurrency. The various modules are mounted in a pipeline and extend the functionality of the basic server behavior. A specific apache deployment may contain one or more modules.
 
 The flow of control is similar to the event driven model in that each request passes through all the modules, similar to how the request passed through all the handlers.
@@ -237,6 +285,7 @@ Apache is a combination of a multiprocess and multithreaded model. In apache, ea
 ![](https://assets.omscs.io/notes/FFDE7A00-458B-4F77-AA6D-690930FEE146.png)
 
 ## Experimental Methodology
+
 The experiments outlined in the flash paper are designed such that the results can help the authors of their paper back up the claims they made about flash.
 
 To achieve a good experimental design you need to answer a few questions.
@@ -274,12 +323,14 @@ Second, because the authors were concerned with Flash's ability to perform concu
 Both of these metrics were evaluated as a function of file size. The intuition is that with a larger file size, the connection cost can be ammortized, resulting in higher bandwidth. On the other hand, with a larger file size, there is more work to do per connection, so it's expected that there will be a lower connection rate.
 
 ## Experimental Results
+
 Let's look at the experimental results.
 
 ### Best Case Numbers
+
 For the best case, the authors used the synthetic load. They varied the number of requests that were made, but made sure each request asked for the exact same file. The is the best case because once the file is requested once, it can be cached which means that subsequent requests for the file will be answered much more quickly.
 
-For the best case experiment, they vary the file size from 0 to 200kb, and they measure the bandwidth which is the number of requests times the file size divided by the total time. By varying the file size, they vary the amount of work that the server has to do on a given request.  
+For the best case experiment, they vary the file size from 0 to 200kb, and they measure the bandwidth which is the number of requests times the file size divided by the total time. By varying the file size, they vary the amount of work that the server has to do on a given request.
 
 ![](https://assets.omscs.io/notes/EBC45431-74FC-4D6D-A91E-5E4D368BCB22.png)
 
@@ -291,7 +342,7 @@ SPED has the best performance. Flash is similar in performance, but it performs 
 
 ![](https://assets.omscs.io/notes/9FA2F6D6-44DC-4BA7-9EF6-FB4D43849B0A.png)
 
- For the Owlnet trace, the results are mostly similar to the best case. We can see that Flash and SPED are the best, followed by MT/MP and then Apache. The reason for this trend is because the owl trace is very small, so most of the requests can be serviced from the cache. However, not everything can be serviced from cache, so sometimes blocking I/O is required. In this case, SPED will block, but Flash will not because it has helpers. This helps explain why Flash's performance is slightly higher than the SPED implementation.
+For the Owlnet trace, the results are mostly similar to the best case. We can see that Flash and SPED are the best, followed by MT/MP and then Apache. The reason for this trend is because the owl trace is very small, so most of the requests can be serviced from the cache. However, not everything can be serviced from cache, so sometimes blocking I/O is required. In this case, SPED will block, but Flash will not because it has helpers. This helps explain why Flash's performance is slightly higher than the SPED implementation.
 
 ### CS Trace
 
@@ -305,14 +356,24 @@ Flash performs the best. It has the smallest memory footprint, which means it ha
 
 ![](https://assets.omscs.io/notes/2A9A866D-FC1C-49C3-B91B-54E20004E4AA.png)
 
- We can see that in all cases, connection rate decreases with file size. That being said, connection rate increases as the number of optimizations increase, with the fully optimized flash having the highest connection rate at a given file size. Optimizations are important!
+We can see that in all cases, connection rate decreases with file size. That being said, connection rate increases as the number of optimizations increase, with the fully optimized flash having the highest connection rate at a given file size. Optimizations are important!
 
 ## Summary of Performance Results
+
 When the data is in cache, SPED smokes AMPED Flash, since AMPED Flash makes an "unnecessary" test for memory presence on each request. Both SPED and AMPED Flash perform better than MT/MP models, because neither occurs any synchronization or context switching overhead.
 
 When the workload is disk-bound, AMPED Flash performs much better than SPED, which blocks on I/O request because it doesn't have asynchronous I/O. AMPED Flash performs better than MT/MP because the more efficient memory implementation leaves more memory available for caching.
 
+### Quiz
+
+![](./img/Pasted%20image%2020210917070432.png)
+
+![](./img/Pasted%20image%2020210917070625.png)
+
 ## Advice on Designing Experiments
+
+![](./img/Pasted%20image%2020210917071308.png)
+
 The clients using the web server care about the response time: how quickly they get a response. The operators of the web server care about throughput: how much information can they send as quickly as possible.
 
 The efficacy of a solution will depend on whose problem you are trying to solve. You will likely need to justify your solution within the context of the problems that your stakeholders are experiencing.
@@ -322,6 +383,8 @@ For example, a solution may improve response time and throughput, or it may impr
 By understanding the stakeholders and the goals that these stakeholders are trying to meet, we can gain some insight into both the metrics and the configuration our experiments.
 
 When picking metrics, a good rule of thumb is to start by looking at metrics that are standard for the target domain. For instance, for web servers it is common to talk about the client request rate or the server response time. This allows you to have a broader audience who can understand and interpret your results, and should be included even if they do not give the best punchline.
+
+![](./img/Pasted%20image%2020210917072522.png)
 
 In addition, you need metrics that answer the who/what/why questions. Why are you doing this work? Whose problems are you trying to solve?
 
@@ -340,6 +403,7 @@ Compare apples to apples! Put another way, only vary one parameter at a time! Do
 What is the baseline performance of the system you are improving? You want to be able to show that your experiment somehow improves the state of the art or at least improves the most common configuration/workflow.
 
 ## Advice on Running Experiments
+
 Here is the easy part:
 
 - Run test cases N times
