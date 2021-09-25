@@ -6,9 +6,14 @@ lecture: memory-management
 ---
 
 # Memory Management
+## Visual Metaphor
+![](Pasted%20image%2020210922122618.png)
+
 
 ## Memory Management: Goals
 Remember that one of the roles of the operating system is to manage the physical resources - in this case DRAM - on behalf of one or more executing processes.
+
+![](Pasted%20image%2020210922122734.png)
 
 The operating system provides an address space to an executing process as a way from decoupling the physical memory from the memory that a process interacts with. Almost everything uses virtual addresses, and the operating system translates these address into physical addresses where the actual data is stored.
 
@@ -17,6 +22,8 @@ The range of the virtual addresses that are visible to a process can be much lar
  **Allocation** requires that the operating system incorporate certain mechanisms and data structures so that it can track how memory is used and what memory is free. In addition, since the physical memory is smaller than the virtual memory, it is possible that some of the virtual memory locations are not present in physical memory and may reference some secondary storage, like disk. The operating system must be able to replace the contents in physical memory with contents from disk.
 
 **Arbitration** requires that the operating system can quickly interpret and verify a process memory access. The OS should quickly be able to translate a virtual address into a physical address and validate it to verify that it is a legal access. Modern operating systems rely on a combination of hardware support and software implementations to accomplish this.
+
+![](Pasted%20image%2020210922131945.png)
 
 The virtual address space is subdivided into fixed-size segments called **pages**. The physical memory is divided into **page frames** of the same size. In terms of allocation, the operating system maps pages into page frames. In this type of **page-based memory management** the arbitration is done via **page tables**.
 
@@ -83,7 +90,7 @@ It's also useful to keep track of an **access bit**,  which can tell us whether 
 
 We can also keep track of **protection bits** which specify whether a page is allowed to be read, written, or executed.
 
-Pentium x86 Page Table Entry
+### Pentium x86 Page Table Entry
 
 ![](https://assets.omscs.io/notes/761F6331-A7C2-44BF-B516-92A921D1483B.png)
 
@@ -147,9 +154,17 @@ Let's look at two different addressing schemes for 64-bit platforms.
 
 In the top figure, we have two page table layers, while in the bottom figure, we have three page table layers. Both figures have page frames in physical memory that are 4KB (4 * 2^10).
 
+![](Pasted%20image%2020210923055219.png)
+
 As we add more levels, the internal page tables/directories end up covering smaller regions of the virtual address space. As a result, it is more likely that the virtual address space will have gaps that will match that granularity, and we will be able to reduce the size of the page table as a result.
 
 The downside of adding more levels to the page table structure is that there are more memory accesses required for translation, since we will have to access more page table components before actually accessing the physical memory. Therefore, the translation latency will be increased.
+
+### Quiz
+![](Pasted%20image%2020210923060932.png)
+
+
+
 
 ## Speeding Up Translation TLB
 Adding levels to our page table structure adds overhead to the address translation process.
@@ -213,6 +228,8 @@ Different system/hardware combinations may support different page sizes. For exa
 
 ## Memory Allocation
 Memory allocation incorporates mechanisms to decide what are the physical pages that will be allocated to a particular virtual memory region. Memory allocators can exist at the kernel level as well as at the user level.
+
+![](Pasted%20image%2020210924120635.png)
 
 **Kernel level allocators** are responsible for allocating pages for the kernel and also for certain static state of processes when they are created - the code, the stack and so forth. In addition, the kernel level allocators are responsible for keeping track of the free memory that is available in the system.
 
